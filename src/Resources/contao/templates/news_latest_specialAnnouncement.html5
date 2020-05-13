@@ -1,0 +1,89 @@
+<div class="layout_latest arc_<?= $this->archive->id ?> block<?= $this->class ?><?php if ($this->Input->get('auto_item') && $this->Input->get('auto_item') == $this->alias) echo ' activeEntry'?>">
+    <?php if ($this->hasText): ?>
+    <a class="inner" href="<?= $this->link ?>" >
+        <?php else: ?>
+        <div class="inner" >
+            <?php endif; ?>
+
+
+            <!-- // Google Microdata-->
+            <?php
+            $gsd = [
+                '@context' => 'https://schema.org',
+                "@type" => "SpecialAnnouncement",
+                "name" => $this->headline,
+                "text" => $this->special_announcement_description ? $this->special_announcement_description : $this->teaser,
+                "datePosted" => $this->date,
+                "expires" => date('Y-m-d', $this->special_announcement_expires),
+                "url" => \InsertTags::replaceInsertTags('{{env::url}}/{{env::request}}'),
+                "category" => $this->special_announcement_category,
+                "announcementLocation" => [
+                    "@type" => $this->special_announcement_location_type,
+                    "name" => $this->special_announcement_location_name,
+                    "url" => \InsertTags::replaceInsertTags('{{env::url}}'),
+                    'address' => [
+                        '@type' => 'PostalAddress',
+                        'streetAddress' => $this->special_announcement_location_streetAddress,
+                        'addressLocality' => $this->special_announcement_location_addressLocality,
+                        'postalCode' => $this->special_announcement_location_postalCode,
+                        'addressCountry' => $this->special_announcement_location_country,
+                        'addressRegion' => $this->special_announcement_location_region ? $this->special_announcement_location_region : $this->special_announcement_location_region_address,
+                    ],
+                    'telephone' => $this->special_announcement_phone,
+                    'priceRange' => $this->special_announcement_location_priceRange,
+                    'image' => ($this->addImage && !empty($this->singleSRC))?'{{env::path}}'.str_replace(" ","%20",$this->singleSRC):'{{env::url}}/Pfad-zu-einer-Ersatzdatei',
+                ]
+            ];
+            ?>
+
+            <?php if (is_array($gsd) && count($gsd) > 0): ?>
+                <script type="application/ld+json">
+            <?php echo json_encode($gsd); ?>
+        </script>
+            <?php endif; ?>
+
+
+            <?php if ($this->addImage): ?>
+                <?php $this->insert('image', $this->arrData); ?>
+            <?php endif; ?>
+
+            <div class="newsText">
+
+                <?php if ($this->hasMetaFields): ?>
+                <?php if (false): ?>
+                <!-- ACHTUNG: das ist nicht sichtbar-->
+                <p class="info">
+                    <time datetime="<?= $this->datetime ?>
+                              ><?php echo date_format(date_create($this->date), "d.m.Y") ?></time> <?= $this->author ?> <?= $this->commentCount ?>
+                        <?php if ($this->subheadline): ?>
+                            <?= $this->subheadline ?>
+                        <?php endif; ?>
+                    </p>
+                <?php endif; ?>
+
+
+
+            <?php endif; ?>
+
+            <h3><?= $this->headline ?></h3>
+
+            <div class="ce_text block">
+                    <?= $this->teaser ?>
+            </div>
+
+            <?php if ($this->hasText): ?>
+                <p class="more">weiterlesen</p>
+            <?php endif; ?>
+
+
+        </div>
+
+
+        <?php if ($this->hasText): ?>
+
+    </a>
+    <?php else: ?>
+</div>
+<?php endif; ?>
+</div>
+

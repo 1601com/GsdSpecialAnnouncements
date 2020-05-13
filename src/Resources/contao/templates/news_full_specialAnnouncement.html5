@@ -1,0 +1,79 @@
+
+<div class="layout_full block<?= $this->class ?>">
+
+
+    <?php if ($this->hasMetaFields): ?>
+        <p class="info"><time datetime="<?= $this->datetime ?>" ><?= $this->date ?></time> <?= $this->author ?> <?= $this->commentCount ?></p>
+    <?php endif; ?>
+
+    <?php if ($this->hasSubHeadline): ?>
+        <h2><?= $this->subHeadline ?></h2>
+    <?php endif; ?>
+
+    <?php if ($this->hasText): ?>
+        <?= $this->text ?>
+    <?php else: ?>
+        <div class="ce_text block">
+            <?php if (!$this->addBefore): ?>
+                <?= $this->teaser ?>
+            <?php endif; ?>
+
+            <?php if ($this->addImage): ?>
+                <?php $this->insert('image', $this->arrData); ?>
+            <?php endif; ?>
+
+            <?php if ($this->addBefore): ?>
+                <?= $this->teaser ?>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if ($this->enclosure): ?>
+        <ul class="enclosure">
+            <?php foreach ($this->enclosure as $enclosure): ?>
+                <li class="download-element ext-<?= $enclosure['extension'] ?>">
+                    <a href="<?= $enclosure['href'] ?>" title="<?= $enclosure['title'] ?>"><?= $enclosure['link'] ?> <span class="size">(<?= $enclosure['filesize'] ?>)</span></a>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php endif; ?>
+
+
+    <!-- // Google Microdata-->
+    <?php
+    $gsd = [
+        '@context' => 'https://schema.org',
+        "@type" => "SpecialAnnouncement",
+        "name" => $this->headline,
+        "text" => $this->special_announcement_description ? $this->special_announcement_description : $this->teaser,
+        "datePosted" => $this->date,
+        "expires" => date('Y-m-d', $this->special_announcement_expires),
+        "url" => \InsertTags::replaceInsertTags('{{env::url}}/{{env::request}}'),
+        "category" => $this->special_announcement_category,
+        "announcementLocation" => [
+            "@type" => $this->special_announcement_location_type,
+            "name" => $this->special_announcement_location_name,
+            "url" => \InsertTags::replaceInsertTags('{{env::url}}'),
+            'address' => [
+                '@type' => 'PostalAddress',
+                'streetAddress' => $this->special_announcement_location_streetAddress,
+                'addressLocality' => $this->special_announcement_location_addressLocality,
+                'postalCode' => $this->special_announcement_location_postalCode,
+                'addressCountry' => $this->special_announcement_location_country,
+                'addressRegion' => $this->special_announcement_location_region ? $this->special_announcement_location_region : $this->special_announcement_location_region_address,
+            ],
+            'telephone' => $this->special_announcement_phone,
+            'priceRange' => $this->special_announcement_location_priceRange,
+            'image' => ($this->addImage && !empty($this->singleSRC))?'{{env::path}}'.str_replace(" ","%20",$this->singleSRC):'{{env::url}}/Pfad-zu-einer-Ersatzdatei',
+        ]
+    ];
+?>
+
+    <?php if (is_array($gsd) && count($gsd) > 0): ?>
+    <script type="application/ld+json">
+            <?php echo json_encode($gsd); ?>
+        </script>
+    <?php endif; ?>
+
+
+</div>
