@@ -2,10 +2,11 @@
     "name": "agentur1601com/gsd-special-announcements",
     "type": "contao-bundle",
     "description": "Extends the news-bundle of contao with fields that simplify the implementation of SpecialAnnouncements from google structured data",
-    "license": "MIT License",
+    "license": "LGPL-3.0+",
     "authors": [
         {
             "name": "Frank Ficzak",
+            "email": "ff@1601.com",
             "homepage": "https://github.com/ff1601com"
         }
     ],
